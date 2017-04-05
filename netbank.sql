@@ -177,8 +177,8 @@ INSERT loan VALUES
 (2,'2012-02-19 13:32:42','2022-02-19 13:32:42',1003,1003,8000,'dkk','QuickLån');
 
 INSERT recurring_transaction VALUES
-(1,1001,1002,199.95,'dkk','dkk','4'),
-(2,1002,1001,8000.00,'dkk','dkk','2');
+(1,1001,1002,199.95,'dkk','dkk','m'),
+(2,1002,1001,8000.00,'dkk','dkk','y');
 
 INSERT user VALUES
 (5, 'JensJensen', 'jens0123');
