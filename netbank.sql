@@ -8,6 +8,8 @@ DROP TABLE IF EXISTS rent;
 DROP TABLE IF EXISTS transaction;
 DROP TABLE IF EXISTS User;
 
+DROP SCHEMA IF EXISTS `netbank`;
+
 -- -----------------------------------------------------
 -- Schema netbank
 -- -----------------------------------------------------
@@ -39,7 +41,7 @@ CREATE TABLE IF NOT EXISTS `netbank`.`currency` (
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `netbank`.`rent` (
   `name` VARCHAR(45) NOT NULL,
-  `rate` DECIMAL(10) NULL,
+  `rate` DECIMAL(3,1) NOT NULL,
   PRIMARY KEY (`name`));
 
 
