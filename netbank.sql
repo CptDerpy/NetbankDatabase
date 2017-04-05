@@ -1,7 +1,7 @@
 DROP TABLE IF EXISTS account;
 DROP TABLE IF EXISTS belongs_to;
 DROP TABLE IF EXISTS currency;
-DROP TABLE IF EXISTS currency_tranferrate;
+DROP TABLE IF EXISTS currency_transferrate;
 DROP TABLE IF EXISTS loan;
 DROP TABLE IF EXISTS recurring_transaction;
 DROP TABLE IF EXISTS rent;
@@ -75,7 +75,7 @@ CREATE TABLE IF NOT EXISTS `netbank`.`transaction` (
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `netbank`.`currency_transferrate` (
   `rate_id` INT NOT NULL AUTO_INCREMENT,
-  `rate` DECIMAL(10) NULL,
+  `rate` DECIMAL(9,8) NOT NULL,
   `from_currency` VARCHAR(3) NOT NULL,
   `to_currency` VARCHAR(3) NOT NULL,
   PRIMARY KEY (`rate_id`));
@@ -150,12 +150,12 @@ INSERT belongs_to VALUES
 (4,1004,4);
 
 INSERT currency_transferrate VALUES
-(1,7.43755801,'eur','dkk'),
-(2,0.134452733,'dkk','eur'),
-(3,1.06575,'eur','usd'),
-(4,0.938306357,'usd','eur'),
-(5,0.143293,'dkk','usd'),
-(6,6.97870796,'usd','dkk');
+(1,'7.43755801','eur','dkk'),
+(2,'0.13445273','dkk','eur'),
+(3,'1.06575000','eur','usd'),
+(4,'0.93830635','usd','eur'),
+(5,'0.14329300','dkk','usd'),
+(6,'6.97870796','usd','dkk');
 
 INSERT currency VALUES
 ('dkk'),
@@ -188,3 +188,5 @@ INSERT account VALUES
 
 INSERT belongs_to VALUES
 (5, 1006, 5);
+
+SELECT * FROM currency_transferrate;
