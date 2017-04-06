@@ -1,11 +1,11 @@
-DROP TABLE IF EXISTS account;
 DROP TABLE IF EXISTS belongs_to;
-DROP TABLE IF EXISTS currency;
-DROP TABLE IF EXISTS currency_transferrate;
 DROP TABLE IF EXISTS loan;
 DROP TABLE IF EXISTS recurring_transaction;
-DROP TABLE IF EXISTS rent;
+DROP TABLE IF EXISTS currency_transferrate;
 DROP TABLE IF EXISTS transaction;
+DROP TABLE IF EXISTS account;
+DROP TABLE IF EXISTS rent;
+DROP TABLE IF EXISTS currency;
 DROP TABLE IF EXISTS user;
 
 DROP SCHEMA IF EXISTS `netbank`;
@@ -55,8 +55,7 @@ CREATE TABLE IF NOT EXISTS `netbank`.`account` (
   `accountType` VARCHAR(45) NOT NULL,
   PRIMARY KEY (`account_id`),
   FOREIGN KEY(`currency_tag`) REFERENCES `netbank`.`currency`(`tag`),
-  FOREIGN KEY(`accountType`) REFERENCES `netbank`.`rent`(`name`),
-  );
+  FOREIGN KEY(`accountType`) REFERENCES `netbank`.`rent`(`name`));
 
 
 -- -----------------------------------------------------
@@ -126,8 +125,7 @@ CREATE TABLE IF NOT EXISTS `netbank`.`loan` (
   FOREIGN KEY(`currency`) REFERENCES `netbank`.`currency`(`tag`),
   FOREIGN KEY(`from_account`) REFERENCES `netbank`.`account`(`account_id`),
   FOREIGN KEY(`to_account`) REFERENCES `netbank`.`account`(`account_id`),
-  FOREIGN KEY(`rate`) REFERENCES `netbank`.`rent`(`name`),
-  );
+  FOREIGN KEY(`rate`) REFERENCES `netbank`.`rent`(`name`));
 
 
 -- -----------------------------------------------------
@@ -141,22 +139,23 @@ CREATE TABLE IF NOT EXISTS `netbank`.`belongs_to` (
   FOREIGN KEY(`account_id`) REFERENCES `netbank`.`account`(`account_id`),
   FOREIGN KEY(`user_id`) REFERENCES `netbank`.`user`(`user_id`));
 
-
-TRUNCATE account;
-TRUNCATE belongs_to;
-TRUNCATE currency;
-TRUNCATE currency_transferrate;
-TRUNCATE loan;
-TRUNCATE recurring_transaction;
-TRUNCATE rent;
-TRUNCATE transaction;
-TRUNCATE user;
-
 INSERT user VALUES
 (1,'HansAndersen','987654321'),
 (2,'JohnDoe','qwerty'),
 (3,'TaylorGang','123456'),
 (4,'Painter','password');
+
+INSERT currency VALUES
+('dkk'),
+('eur'),
+('usd');
+
+INSERT rent VALUES
+('Realkreditlån',1.5),
+('QuickLån',13.5),
+('Opsparing', 0.5),
+('Grundkonto', 0.5),
+('Valutakonto', 0.7);
 
 INSERT account VALUES
 (1001,539.55,'dkk','Opsparing'),
@@ -165,11 +164,11 @@ INSERT account VALUES
 (1004,2233.00,'eur','Valutakonto'),
 (1005,1233.00,'usd','Valutakonto');
 
-INSERT belongs_to VALUES
-(1,1001,1),
-(2,1002,2),
-(3,1003,3),
-(4,1004,4);
+INSERT transaction VALUES
+(1,'2017-02-14 18:32:44',1001,1002,199.95,'dkk','dkk',1.000000000),
+(2,'2017-01-02 14:54:23',1003,1004,5000.00,'dkk','eur',0.134452733),
+(3,'2017-03-24 16:12:31',1002,1001,8000.00,'dkk','dkk',1.000000000),
+(4,'2016-08-05 08:35:18',1004,1005,250.00,'eur','usd',1.065750000);
 
 INSERT currency_transferrate VALUES
 (1,'7.43755801','eur','dkk'),
@@ -179,28 +178,19 @@ INSERT currency_transferrate VALUES
 (5,'0.14329300','dkk','usd'),
 (6,'6.97870796','usd','dkk');
 
-INSERT currency VALUES
-('dkk'),
-('eur'),
-('usd');
-
-INSERT rent VALUES
-('Realkreditlån',1.5),
-('QuickLån',13.5);
-
-INSERT transaction VALUES
-(1,'2017-02-14 18:32:44',1001,1002,199.95,'dkk','dkk',1.000000000),
-(2,'2017-01-02 14:54:23',1003,1004,5000.00,'dkk','eur',0.134452733),
-(3,'2017-03-24 16:12:31',1002,1001,8000.00,'dkk','dkk',1.000000000),
-(4,'2016-08-05 08:35:18',1004,1005,250.00,'eur','usd',1.065750000);
+INSERT recurring_transaction VALUES
+(1,1001,1002,199.95,'dkk','dkk','m'),
+(2,1002,1001,8000.00,'dkk','dkk','y');
 
 INSERT loan VALUES
 (1,'2015-04-15 13:32:42','2025-04-15 13:32:42',1003,1003,25000,'dkk','Realkreditlån'),
 (2,'2012-02-19 13:32:42','2022-02-19 13:32:42',1003,1003,8000,'dkk','QuickLån');
 
-INSERT recurring_transaction VALUES
-(1,1001,1002,199.95,'dkk','dkk','m'),
-(2,1002,1001,8000.00,'dkk','dkk','y');
+INSERT belongs_to VALUES
+(1,1001,1),
+(2,1002,2),
+(3,1003,3),
+(4,1004,4);
 
 INSERT user VALUES
 (5, 'JensJensen', 'jens0123');
