@@ -55,7 +55,7 @@ CREATE TABLE IF NOT EXISTS `netbank`.`account` (
   `accountType` VARCHAR(45) NOT NULL,
   PRIMARY KEY (`account_id`),
   FOREIGN KEY(`currency_tag`) REFERENCES `netbank`.`currency`(`tag`),
-  FOREIGN KEY(`accountType`) REFERENCES `netbank`.`account`(`account_id`),
+  FOREIGN KEY(`accountType`) REFERENCES `netbank`.`rent`(`name`),
   );
 
 
