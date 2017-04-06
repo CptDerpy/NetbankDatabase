@@ -201,5 +201,4 @@ INSERT account VALUES
 INSERT belongs_to VALUES
 (5, 1006, 5);
 
-SELECT * FROM currency_transferrate;
-SELECT * FROM recurring_transaction;
+SELECT user_id, username, password, account_id, amount, currency_tag, accountType FROM user NATURAL JOIN belongs_to NATURAL JOIN account;
