@@ -6,7 +6,7 @@ DROP TABLE IF EXISTS loan;
 DROP TABLE IF EXISTS recurring_transaction;
 DROP TABLE IF EXISTS rent;
 DROP TABLE IF EXISTS transaction;
-DROP TABLE IF EXISTS User;
+DROP TABLE IF EXISTS user;
 
 DROP SCHEMA IF EXISTS `netbank`;
 
@@ -17,9 +17,9 @@ CREATE SCHEMA IF NOT EXISTS `netbank` DEFAULT CHARACTER SET utf8 ;
 USE `netbank` ;
 
 -- -----------------------------------------------------
--- Table `netbank`.`User`
+-- Table `netbank`.`user`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `netbank`.`User` (
+CREATE TABLE IF NOT EXISTS `netbank`.`user` (
   `user_id` INT NOT NULL AUTO_INCREMENT,
   `username` VARCHAR(45) NOT NULL,
   `password` VARCHAR(45) NOT NULL,
@@ -51,8 +51,8 @@ CREATE TABLE IF NOT EXISTS `netbank`.`rent` (
 CREATE TABLE IF NOT EXISTS `netbank`.`account` (
   `account_id` INT NOT NULL AUTO_INCREMENT,
   `amount` DECIMAL(10,2) NOT NULL,
-  `currency_tag` VARCHAR(3) NOT NULL,
-  `accountType` VARCHAR(45) NULL,
+  `currency_tag` VARCHAR(3) NOT NULL REFERENCES `netbank`.`currency`(`tag`),
+  `accountType` VARCHAR(45) NULL REFERENCES `netbank`.`rent`(`name`),
   PRIMARY KEY (`account_id`)
   );
 
@@ -63,11 +63,11 @@ CREATE TABLE IF NOT EXISTS `netbank`.`account` (
 CREATE TABLE IF NOT EXISTS `netbank`.`transaction` (
   `trans_id` INT NOT NULL AUTO_INCREMENT,
   `timestamp` DATETIME NULL,
-  `from_account` INT NOT NULL,
-  `to_account` INT NOT NULL,
+  `from_account` INT NOT NULL REFERENCES `netbank`.`account`(`account_id`),
+  `to_account` INT NOT NULL REFERENCES `netbank`.`account`(`account_id`),
   `amount` DECIMAL(10,2) NULL,
-  `from_currency` VARCHAR(3) NOT NULL,
-  `to_currency` VARCHAR(3) NOT NULL,
+  `from_currency` VARCHAR(3) NOT NULL REFERENCES `netbank`.`currency`(`tag`),
+  `to_currency` VARCHAR(3) NOT NULL REFERENCES `netbank`.`currency`(`tag`),
   `transferrate` DECIMAL(10,9) NULL,
   PRIMARY KEY (`trans_id`));
 
@@ -78,21 +78,21 @@ CREATE TABLE IF NOT EXISTS `netbank`.`transaction` (
 CREATE TABLE IF NOT EXISTS `netbank`.`currency_transferrate` (
   `rate_id` INT NOT NULL AUTO_INCREMENT,
   `rate` DECIMAL(9,8) NOT NULL,
-  `from_currency` VARCHAR(3) NOT NULL,
-  `to_currency` VARCHAR(3) NOT NULL,
+  `from_currency` VARCHAR(3) NOT NULL REFERENCES `netbank`.`currency`(`tag`),
+  `to_currency` VARCHAR(3) NOT NULL REFERENCES `netbank`.`currency`(`tag`),
   PRIMARY KEY (`rate_id`));
-
+CREATE UNIQUE INDEX unique_rate ON `netbank`.`currency_transferrate` (`from_currency`, `to_currency`);
 
 -- -----------------------------------------------------
 -- Table `netbank`.`recurring_transaction`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `netbank`.`recurring_transaction` (
   `recurr_id` INT NOT NULL AUTO_INCREMENT,
-  `from_account` INT NOT NULL,
-  `to_account` INT NOT NULL,
+  `from_account` INT NOT NULL REFERENCES `netbank`.`account`(`account_id`),
+  `to_account` INT NOT NULL REFERENCES `netbank`.`account`(`account_id`),
   `amount` DECIMAL(10,2) NULL,
-  `from_currency` VARCHAR(3) NOT NULL,
-  `to_currency` VARCHAR(3) NOT NULL,
+  `from_currency` VARCHAR(3) NOT NULL REFERENCES `netbank`.`currency`(`tag`),
+  `to_currency` VARCHAR(3) NOT NULL REFERENCES `netbank`.`currency`(`tag`),
   `occurencyRate` VARCHAR(1) NOT NULL,
   PRIMARY KEY (`recurr_id`));
 
@@ -104,11 +104,11 @@ CREATE TABLE IF NOT EXISTS `netbank`.`loan` (
   `loan_id` INT NOT NULL AUTO_INCREMENT,
   `loan_started` DATETIME NULL,
   `loan_expiration` DATETIME NULL,
-  `from_account` INT NOT NULL,
-  `to_account` INT NOT NULL,
+  `from_account` INT NOT NULL REFERENCES `netbank`.`account`(`account_id`),
+  `to_account` INT NOT NULL REFERENCES `netbank`.`account`(`account_id`),
   `amount` DECIMAL(10) NULL,
-  `currency` VARCHAR(3) NOT NULL,
-  `rate` VARCHAR(45) NULL,
+  `currency` VARCHAR(3) NOT NULL REFERENCES `netbank`.`currency`(`tag`),
+  `rate` VARCHAR(45) NULL REFERENCES `netbank`.`rent`(`name`),
   PRIMARY KEY (`loan_id`));
 
 
@@ -117,8 +117,8 @@ CREATE TABLE IF NOT EXISTS `netbank`.`loan` (
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `netbank`.`belongs_to` (
   `belongs_id` INT NOT NULL AUTO_INCREMENT,
-  `account_id` INT NOT NULL,
-  `user_id` INT NOT NULL,
+  `account_id` INT NOT NULL REFERENCES `netbank`.`account`(`account_id`),
+  `user_id` INT NOT NULL REFERENCES `netbank`.`user`(`user_id`),
   PRIMARY KEY (`belongs_id`));
 
 
@@ -130,9 +130,9 @@ TRUNCATE loan;
 TRUNCATE recurring_transaction;
 TRUNCATE rent;
 TRUNCATE transaction;
-TRUNCATE User;
+TRUNCATE user;
 
-INSERT User VALUES
+INSERT user VALUES
 (1,'HansAndersen','987654321'),
 (2,'JohnDoe','qwerty'),
 (3,'TaylorGang','123456'),
