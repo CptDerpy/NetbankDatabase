@@ -236,3 +236,31 @@ RETURN CONCAT((FORMAT (Result*Rate,2)),' ',(SELECT `to_currency` FROM transactio
 END; //
 DELIMITER ;
 SELECT CurrencyCalc(2);
+
+DELIMITER //
+CREATE PROCEDURE CalcLoanRent ()
+BEGIN
+UPDATE loan SET amount = amount + amount * rate WHERE DATEDIFF(CURDATE(), loan_expires) > 0;
+END; //
+DELIMITER ; 
+
+DELIMITER //
+CREATE TRIGGER CheckMaxLoans BEFORE INSERT
+ON loan
+FOR EACH ROW BEGIN
+DECLARE result INT;
+SELECT count(*) INTO result FROM (
+    SELECT to_account FROM loan WHERE to_account = NEW.to_account
+) AS result;
+IF (Result > 10) THEN
+    SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Too many loans';
+END IF;
+END //
+DELIMITER ;
+
+CREATE EVENT WeeklyLoanRentCalc
+ON SCHEDULE EVERY 1 WEEK
+STARTS '2017-01-01 00:00:01'
+DO CALL CalcLoanRent;
+SET GLOBAL event_scheduler = 1;
+SHOW VARIABLES LIKE 'event_scheduler';
