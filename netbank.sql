@@ -207,6 +207,12 @@ UPDATE rent SET rate = '14.5' WHERE name = 'QuickLån';
 
 SELECT * FROM rent WHERE name = 'QuickLån';
 
+# Delete the recurring transaction with id=2
+DELETE FROM recurring_transaction WHERE recurr_id = 2;
+
+# View recurring transactions
+SELECT * FROM recurring_transaction;
+
 # View users with associated accounts
 SELECT user_id, username, password, account_id, amount, currency_tag, accountType FROM user NATURAL JOIN belongs_to NATURAL JOIN account;
 
