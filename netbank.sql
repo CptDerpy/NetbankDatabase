@@ -201,7 +201,7 @@ INSERT account VALUES
 INSERT belongs_to VALUES
 (5, 1006, 5);
 
-#SELECT user_id, username, password, account_id, amount, currency_tag, accountType FROM user NATURAL JOIN belongs_to NATURAL JOIN account;
+SELECT user_id, username, password, account_id, amount, currency_tag, accountType FROM user NATURAL JOIN belongs_to NATURAL JOIN account;
 
 DELIMITER //
 CREATE FUNCTION CurrencyCalc (vTrans_id INT) 
