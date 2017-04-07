@@ -192,6 +192,7 @@ INSERT belongs_to VALUES
 (3,1003,3),
 (4,1004,4);
 
+# Create new user and associated account
 INSERT user VALUES
 (5, 'JensJensen', 'jens0123');
 
@@ -201,4 +202,16 @@ INSERT account VALUES
 INSERT belongs_to VALUES
 (5, 1006, 5);
 
+# Update loan rate
+UPDATE rent SET rate = '14.5' WHERE name = 'QuickLån';
+
+SELECT * FROM rent WHERE name = 'QuickLån';
+
+# View users with associated accounts
 SELECT user_id, username, password, account_id, amount, currency_tag, accountType FROM user NATURAL JOIN belongs_to NATURAL JOIN account;
+
+# View users with loans in the bank
+SELECT user_id, username, account_id, loan_id, loan_started, loan_expiration, amount, currency, rate FROM user NATURAL JOIN belongs_to NATURAL JOIN loan WHERE to_account = account_id;
+
+# View specific user's transactions
+SELECT username, trans_id, amount, from_currency AS currency, to_account, timestamp AS date FROM user NATURAL JOIN belongs_to NATURAL JOIN transaction WHERE account_id = from_account AND username = 'JohnDoe';
