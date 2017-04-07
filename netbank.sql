@@ -201,4 +201,17 @@ INSERT account VALUES
 INSERT belongs_to VALUES
 (5, 1006, 5);
 
-SELECT user_id, username, password, account_id, amount, currency_tag, accountType FROM user NATURAL JOIN belongs_to NATURAL JOIN account;
+#SELECT user_id, username, password, account_id, amount, currency_tag, accountType FROM user NATURAL JOIN belongs_to NATURAL JOIN account;
+
+DELIMITER //
+CREATE FUNCTION CurrencyCalc (vTrans_id INT) 
+RETURNS VARCHAR(50)
+BEGIN
+DECLARE Result DECIMAL(10,2);
+DECLARE Rate DECIMAL(10,9);
+SELECT amount INTO Result FROM transaction WHERE trans_id = vTrans_id;
+SELECT transferrate INTO Rate FROM transaction WHERE trans_id = vTrans_id;
+RETURN CONCAT((FORMAT (Result*Rate,2)),' ',(SELECT `to_currency` FROM transaction WHERE trans_id = vTrans_id));
+END; //
+DELIMITER ;
+SELECT CurrencyCalc(2);
