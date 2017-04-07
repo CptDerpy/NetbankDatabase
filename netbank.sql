@@ -202,7 +202,6 @@ INSERT account VALUES
 INSERT belongs_to VALUES
 (5, 1006, 5);
 
-<<<<<<< HEAD
 # Update loan rate
 UPDATE rent SET rate = '14.5' WHERE name = 'QuickLån';
 
@@ -216,7 +215,7 @@ SELECT user_id, username, account_id, loan_id, loan_started, loan_expiration, am
 
 # View specific user's transactions
 SELECT username, trans_id, amount, from_currency AS currency, to_account, timestamp AS date FROM user NATURAL JOIN belongs_to NATURAL JOIN transaction WHERE account_id = from_account AND username = 'JohnDoe';
-=======
+
 SELECT user_id, username, password, account_id, amount, currency_tag, accountType FROM user NATURAL JOIN belongs_to NATURAL JOIN account;
 
 DELIMITER //
@@ -231,4 +230,3 @@ RETURN CONCAT((FORMAT (Result*Rate,2)),' ',(SELECT `to_currency` FROM transactio
 END; //
 DELIMITER ;
 SELECT CurrencyCalc(2);
->>>>>>> origin/foreign_key
